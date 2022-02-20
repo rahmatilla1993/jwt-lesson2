@@ -1,0 +1,22 @@
+CREATE OR REPLACE FUNCTION get_TransAction(amount float, _balance float, from_card_id int, to_card_id int)
+    RETURNS boolean AS
+$$
+    DECLARE
+        result boolean;
+    BEGIN
+       IF amount > _balance THEN
+           result = FALSE;
+       ELSE
+           UPDATE card
+           SET balance = balance - amount
+           WHERE id = from_card_id;
+
+           UPDATE card
+           SET balance = balance + amount
+           WHERE id = to_card_id;
+           result = TRUE;
+        END IF;
+       RETURN result;
+    END;
+$$
+    LANGUAGE plpgsql;
